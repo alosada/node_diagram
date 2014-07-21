@@ -1,5 +1,5 @@
 
-class Map
+class Diagram
 
   attr_accessor :graph, :nodes
 
