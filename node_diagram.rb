@@ -1,7 +1,7 @@
 
 class Diagram
 
-  attr_accessor :graph, :nodes
+  attr_accessor :link_string, :nodes
 
   def initialize(path)
     @link_string = ''
@@ -18,7 +18,7 @@ class Diagram
   end
 
   def create_nodes
-    unq_nodes.each { |node| nodes << Node.new(node)}
+    uniq_nodes.each { |node| nodes << Node.new(node)}
     create_node_connections
   end
 
@@ -33,6 +33,11 @@ class Diagram
     nodes = []
     links.each{ |link| nodes << link[0] }
     nodes.uniq
+  end
+
+  def find_node(label)
+    nodes.each{|node| return node if node.label == label}
+    false
   end
 
 end
