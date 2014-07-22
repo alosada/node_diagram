@@ -18,10 +18,21 @@ class Diagram
   end
 
   def create_nodes
+    unq_nodes.each { |node| nodes << Node.new(node)}
+    create_node_connections
+  end
+
+  def create_node_connections
     links.each do |link|
-      nodes<<Node.new(link[0])
-      nodes.last.connections[link[1]] = link[2].to_i
+      node=find_node(link[0])
+      node.connections[link[1]] = link[2].to_i
     end
+  end
+
+  def uniq_nodes
+    nodes = []
+    links.each{ |link| nodes << link[0] }
+    nodes.uniq
   end
 
 end
