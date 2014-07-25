@@ -10,7 +10,7 @@ class Diagram
     link_string.each_line{ |line| @link_string << line }
     create_nodes
   end
-  #AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7
+
   def find_paths(start, finish)
     @paths = []
     build_paths(start, finish)
@@ -32,15 +32,24 @@ class Diagram
     distance
   end
 
-  def min_paths(start, finish)
-    find_paths(start, finish).map { |path| path_value(path) }.min
+  def min_path(start, finish)
+    min_max_path(start, finish, true)
   end
 
-  def max_paths(start, finish)
-    find_paths(start, finish).map { |path| path_value(path) }.max
+  def max_path(start, finish)
+    min_max_path(start, finish, false)
   end
 
   private
+
+  def min_max_path(start, finish, min)
+    paths = find_paths(start, finish)
+    path_values=paths.map { |path| path_value(path) }
+    value = path_values.min if min
+    value = path_values.max if !min
+    {path: paths[path_values.index(value)], value: value}
+
+  end
 
   def build_paths(start, finish, this_path=[])
     this_path << start
@@ -101,7 +110,7 @@ class Node
 end
 
 dia=Diagram.new('links.md')
-p dia.find_paths('A','C')
-p dia.min_paths('A', 'C')
-p dia.max_paths('A', 'C')
+# p dia.find_paths('A','C')
+p dia.min_path('A', 'C')
+p dia.max_path('A', 'C')
 
