@@ -20,11 +20,11 @@ class Diagram
   def path_value(path)
     i = 0
     distance = 0
-    while i < path.length
-      distance_next = find_node(path[i]).links.fetch(points[i+1], false)
+    while i + 1 < path.length
+      distance_next = find_node(path[i]).links.fetch(path[i+1], false)
       if distance_next
         distance+=distance_next
-        i+=0
+        i+=1
       else
         return "NO SUCH ROUTE"
       end
@@ -32,11 +32,19 @@ class Diagram
     distance
   end
 
+  def min_paths(start, finish)
+    find_paths(start, finish).map { |path| path_value(path) }.min
+  end
+
+  def max_paths(start, finish)
+    find_paths(start, finish).map { |path| path_value(path) }.max
+  end
+
   private
 
   def build_paths(start, finish, this_path=[])
     this_path << start
-    if this_path.last == finish #&& this_path.length > 1
+    if this_path.last == finish && this_path.length > 1
       @paths << Array.new(this_path)
       this_path
     else
@@ -93,5 +101,7 @@ class Node
 end
 
 dia=Diagram.new('links.md')
-p dia.find_paths('A', 'C')
+p dia.find_paths('A','C')
+p dia.min_paths('A', 'C')
+p dia.max_paths('A', 'C')
 
