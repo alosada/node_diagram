@@ -8,3 +8,13 @@ describe Diagram do
     end
   end
 end
+
+describe Node do
+  node=Node.new('Z')
+  node.connections = {'Y'=>1, 'X'=>2}
+  describe "#connections" do
+    it "Returns the connection labels" do
+      expect(node.connections.keys).to eq(["Y", "X"])
+    end
+  end
+end
