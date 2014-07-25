@@ -11,10 +11,25 @@ class Diagram
     create_nodes
   end
   #AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7
-  def find_paths(start, finish, repeat=false)
+  def find_paths(start, finish)
     @paths = []
-    build_paths(start, finish) unless repeat
+    build_paths(start, finish)
     @paths
+  end
+
+  def path_value(path)
+    i = 0
+    distance = 0
+    while i < path.length
+      distance_next = find_node(path[i]).links.fetch(points[i+1], false)
+      if distance_next
+        distance+=distance_next
+        i+=0
+      else
+        return "NO SUCH ROUTE"
+      end
+    end
+    distance
   end
 
   private
