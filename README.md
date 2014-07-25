@@ -18,6 +18,8 @@ Two objects:
 
  #find_paths: takes 2 nodes, an integer and an optional boolean as input and returns an rray of valid paths between the two nodes. By default it does not allow repetition of nodes.
 
- #min_path: takes 2 nodes as input and returns the path with the smallest value between them.
+ #min_path: takes 2 nodes as input and returns a hash containing smallest path and its value.
 
- #paths_under_value: takes 2 nodes and an integer as input and returns the number of path with values lower than the integer passed.
+ #max_path: takes 2 nodes as input and returns a hash containing the largest path and its value.
+
+
