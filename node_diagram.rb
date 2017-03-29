@@ -1,14 +1,12 @@
 
-class Diagram
+class NodeDiagram
 
-  attr_accessor :link_string, :nodes
+  attr_accessor :links, :nodes
 
-  def initialize(path)
-    @link_string = ''
+  def initialize(file_path)
     @nodes = []
-    link_string = File.open(path, 'r')
-    link_string.each_line{ |line| @link_string << line }
-    create_nodes
+    @links = []
+    resolve_links(file_path)
   end
 
   def find_paths(start, finish)
@@ -21,7 +19,9 @@ class Diagram
     i = 0
     distance = 0
     while i + 1 < path.length
-      distance = resolve_distance(distance, i)
+      distance_next = find_node(path[i]).links.fetch(path[i+1], false)
+      raise "No such route" unless distance_next
+      distance += distance_next
       i+=1
     end
     distance
@@ -35,28 +35,47 @@ class Diagram
     min_max_path(start, finish, false)
   end
 
-  private
+  # private
 
-  def resolve_distance(distance, i)
-    distance_next = find_node(path[i]).links.fetch(path[i+1], false)
-    return "NO SUCH ROUTE" unless distance_next
-    distance + distance_next
+  def resolve_links(file_path)
+    file = File.open(file_path, 'r')
+    file.each_line do |line|
+      links << line.gsub!("\n", '')
+      link = line.split(', ')
+      resolve_nodes(link)
+    end
+  end
+
+  def resolve_nodes(link)
+    link.first(2).each do |label|
+      node = resolve_node(label)
+      node.resolve_link(link)
+    end
+  end
+
+  def resolve_node(label)
+    node = find_node(label)
+    return node unless node.nil?
+    nodes << Node.new(label)
+    nodes.last
   end
 
   def min_max_path(start, finish, min)
-    paths = find_paths(start, finish)
-    path_values=paths.map { |path| path_value(path) }
-    value = path_values.min if min
-    value = path_values.max if !min
-    {path: paths[path_values.index(value)], value: value}
-
+    build_paths(start, finish)
+    path_values = @paths.map { |path| path_value(path.split('')) }
+    value =
+      if min
+        path_values.min
+      else
+        path_values.max
+      end
+    {path: @paths[path_values.index(value)], value: value}
   end
 
   def build_paths(start, finish, this_path=[])
     this_path << start
     if this_path.last == finish && this_path.length > 1
-      @paths << Array.new(this_path)
-      this_path
+      @paths << this_path.join('')
     else
       find_node(start).links.keys.each do |link|
         this_path = build_paths(link, finish, this_path) unless this_path.include?(link)
@@ -66,41 +85,33 @@ class Diagram
     this_path
   end
 
-  def links
-    link_string.gsub(/\n/,', ').split(', ')
-  end
-
-  def create_nodes
-    uniq_nodes.each { |node| nodes << Node.new(node, {})}
-    create_node_links
-  end
-
   def create_node_links
     links.each do |link|
-      node=find_node(link[0])
+      node = find_node(link[0])
       node.links[link[1]] = link[2].to_i
     end
   end
 
-  def uniq_nodes
-    nodes = []
-    links.each{ |link| nodes << link[0] }
-    nodes.uniq
-  end
-
   def find_node(label)
     nodes.each{|node| return node if node.label == label}
-    false
+    nil
   end
 
+  class Node
+  
+    attr_accessor :label, :links
+    
+    def initialize(label)
+      @label = label
+      @links = Hash.new
+    end
+
+    def resolve_link(path)
+      return nil unless path.include? label 
+      link = Array.new(path)
+      link.delete(label)
+      links[link.first] = link.last.to_i unless links.fetch(link.first, false)
+    end
+  
+  end
 end
-
-Node = Struct.new(:label, :links)
-
-node = Node.new('foo', {})
-p node.to_s
-p node.links
-# dia = Diagram.new('links.md')
-# p dia.min_path('A', 'C')
-# p dia.max_path('A', 'C')
-

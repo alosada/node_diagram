@@ -16,7 +16,7 @@ Two objects:
 
  #path_value: takes an array of nodes and returns the total value of its links.
 
- #find_paths: takes 2 nodes, an integer and an optional boolean as input and returns an rray of valid paths between the two nodes. By default it does not allow repetition of nodes.
+ #find_paths: takes 2 nodes as input and returns an rray of valid paths between the two nodes. By default it does not allow repetition of nodes.
 
  #min_path: takes 2 nodes as input and returns a hash containing smallest path and its value.
 
