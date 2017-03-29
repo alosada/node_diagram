@@ -22,4 +22,7 @@ Two objects:
 
  #max_path: takes 2 nodes as input and returns a hash containing the largest path and its value.
 
+-Node:
+ - A simple stucture containing the lable of the node, and the links. 
+
 

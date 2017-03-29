@@ -21,13 +21,8 @@ class Diagram
     i = 0
     distance = 0
     while i + 1 < path.length
-      distance_next = find_node(path[i]).links.fetch(path[i+1], false)
-      if distance_next
-        distance+=distance_next
-        i+=1
-      else
-        return "NO SUCH ROUTE"
-      end
+      distance = resolve_distance(distance, i)
+      i+=1
     end
     distance
   end
@@ -41,6 +36,12 @@ class Diagram
   end
 
   private
+
+  def resolve_distance(distance, i)
+    distance_next = find_node(path[i]).links.fetch(path[i+1], false)
+    return "NO SUCH ROUTE" unless distance_next
+    distance + distance_next
+  end
 
   def min_max_path(start, finish, min)
     paths = find_paths(start, finish)
@@ -70,7 +71,7 @@ class Diagram
   end
 
   def create_nodes
-    uniq_nodes.each { |node| nodes << Node.new(node)}
+    uniq_nodes.each { |node| nodes << Node.new(node, {})}
     create_node_links
   end
 
@@ -94,23 +95,12 @@ class Diagram
 
 end
 
-class Node
+Node = Struct.new(:label, :links)
 
-  attr_accessor :label, :links
-
-  def initialize(label)
-    @label=label
-    @links = {}
-  end
-
-  def to_s
-    label
-  end
-
-end
-
-dia=Diagram.new('links.md')
-# p dia.find_paths('A','C')
-p dia.min_path('A', 'C')
-p dia.max_path('A', 'C')
+node = Node.new('foo', {})
+p node.to_s
+p node.links
+# dia = Diagram.new('links.md')
+# p dia.min_path('A', 'C')
+# p dia.max_path('A', 'C')
 
