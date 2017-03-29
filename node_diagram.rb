@@ -16,6 +16,7 @@ class NodeDiagram
   end
 
   def path_value(path)
+    path = path.split('')
     i = 0
     distance = 0
     while i + 1 < path.length
@@ -35,7 +36,7 @@ class NodeDiagram
     min_max_path(start, finish, false)
   end
 
-  # private
+  private
 
   def resolve_links(file_path)
     file = File.open(file_path, 'r')
@@ -62,7 +63,7 @@ class NodeDiagram
 
   def min_max_path(start, finish, min)
     build_paths(start, finish)
-    path_values = @paths.map { |path| path_value(path.split('')) }
+    path_values = @paths.map { |path| path_value(path) }
     value =
       if min
         path_values.min

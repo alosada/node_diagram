@@ -10,7 +10,7 @@ RSpec.describe NodeDiagram do
   end
   describe "#path_value" do
     it "Returns the value of path A-B-C (9)" do
-      expect(diagram.path_value(['A','B','C'])).to eq(9)
+      expect(diagram.path_value('ABC')).to eq(9)
     end
   end
   describe "#min_path" do
